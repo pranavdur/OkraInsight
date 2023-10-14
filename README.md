@@ -1,5 +1,5 @@
 # OkraInsight
-The goal of this project is to provide an alternative to people who are not experts in visually determining Okra tenderness at the time of buying and yet do not wish to use the traditional destructive testing method where the tip is bent to see if it snaps clean (test pass) or deforms/sags (test fail). The destructuve method results in accelerating food spoilage and reduces the likelihood of even good Okra being sold when its next to damaged Okra. In addition, when Okra is packaged in a see-through wrapper, or when vendor simply dis-allows, the option of destructive testing may not be possible.  
+The goal of this project is to provide an iphone app based alternative to people who are not experts in visually determining Okra tenderness at the time of buying and yet do not wish to use the traditional destructive testing method where the tip is bent to see if it snaps clean (test pass) or deforms/sags (test fail). The destructuve method results in accelerating food spoilage and reduces the likelihood of even good Okra being sold when its next to damaged Okra. In addition, when Okra is packaged in a see-through wrapper, or when vendor simply dis-allows, the option of destructive testing may not be possible.  
 
 
 ## What is done ?
@@ -9,7 +9,9 @@ As a first step to solve this, I built an Okra mobile segnet model, that can be 
 The next steps are to build a classfier that takes the Okra mobile segnet output to extract just the pixels in the Okra surface region and generates a single binary classification of whole Okra into tender or not-tender.
 
 ## Details
-| ![Input](./__artifacts/input_image.png) | ![Predicted Output](./__artifacts/predicted_segment_mask.png) | ![Ground Truth Mask ](./__artifacts/ground_truth.png)
+Input | Ground Truth | Prediction
+---|---|---
+![Input](./__artifacts/input_image.png) | ![Ground Truth Mask ](./__artifacts/ground_truth.png) | ![Predicted Output](./__artifacts/predicted_segment_mask.png)
 
 ### Okra mobile segnet
 The code in this project can be used to build, train and evaluate a semantic segmentation network for identifying Okra surface within a 2D image containing single Okra against arbitrary background. This project includes preparing images and groundtruth masks as well. Since the goal is to deploy this model on smartphone like device, I build the segmentation network using the mobile hardware compatible open source torch vision model [<u>DeepLabV3 Mobile-Net</u>][DeepLabV3Website] is customized. 
