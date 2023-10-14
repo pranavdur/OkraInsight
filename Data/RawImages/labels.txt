@@ -1,6 +1,0 @@
-__ignore__
-_background_
-TenderOkraSurface
-TenderOkraInside
-NonTenderOkraSurface
-NonTenderOkraInside
