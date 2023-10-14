@@ -8,8 +8,10 @@ As a first step to solve this, I built an Okra mobile segnet model, that can be 
 ## What is coming next ?
 The next steps are to build a classfier that takes the Okra mobile segnet output to extract just the pixels in the Okra surface region and generates a single binary classification of whole Okra into tender or not-tender.
 
+## Details
+| ![Input](./__artifacts/input_image.png) | ![Predicted Output](./__artifacts/predicted_segment_mask.png) | ![Ground Truth Mask ](./__artifacts/ground_truth.png)
 
-## Okra mobile segnet
+### Okra mobile segnet
 The code in this project can be used to build, train and evaluate a semantic segmentation network for identifying Okra surface within a 2D image containing single Okra against arbitrary background. This project includes preparing images and groundtruth masks as well. Since the goal is to deploy this model on smartphone like device, I build the segmentation network using the mobile hardware compatible open source torch vision model [<u>DeepLabV3 Mobile-Net</u>][DeepLabV3Website] is customized. 
 
 ### Image Dataset
@@ -27,8 +29,8 @@ I tried 2 approaches to generating the ground truth segmentation masks for Okra
 
 The approach 2 produced a higher quality Okra segmentation masks. So I relied on this for training the mobile network for Okra segmentation.
 
-
 ## Training
+[images captured from wandb dashboard]
 ### Loss function
 ![training loss ](./__artifacts/training_loss_function.png)
 
