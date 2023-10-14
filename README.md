@@ -28,6 +28,13 @@ I tried 2 approaches to generating the ground truth segmentation masks for Okra
 The approach 2 produced a higher quality Okra segmentation masks. So I relied on this for training the mobile network for Okra segmentation.
 
 
+## Training
+### Loss function
+![training loss ](./__artifacts/training_loss_function.png)
+
+### System resource
+![training loss ](./__artifacts/gpu_usage.png)
+
 [DeepLabV3Website]: <https://github.com/pytorch/vision/tree/main/references/segmentation> "example text"
 [SAMGithub]: <https://github.com/facebookresearch/segment-anything>
 [SAMWebsite]: <https://ai.meta.com/research/publications/segment-anything/>
