@@ -1,6 +1,7 @@
 import logging
 import numpy as np
 import torch
+import PIL
 from PIL import Image
 from functools import lru_cache
 from functools import partial
@@ -40,14 +41,17 @@ def unique_mask_values(idx, mask_dir, mask_suffix):
 
 
 class BasicDataset(Dataset):
-    def __init__(self, images_dir: str, mask_dir: str, scale: float = 1.0, mask_suffix: str = ''):
+    def __init__(self, images_dir: str, mask_dir: str, normalize: transforms.Normalize, scale: float = 1.0,  orient: int = 0, mask_suffix: str = ''):
         self.images_dir = Path(images_dir)
         self.mask_dir = Path(mask_dir)
         assert 0 < scale <= 1, 'Scale must be between 0 and 1'
         self.scale = scale
         self.mask_suffix = mask_suffix
+        self.orient = orient
+        self.normalize = normalize
 
-        self.ids = [splitext(file)[0] for file in listdir(images_dir) if isfile(join(images_dir, file)) and not file.startswith('.')]
+        self.ids = [splitext(file)[0]+"_orient_"+ str(orient) for file in listdir(images_dir) if isfile(join(images_dir, file)) and not file.startswith('.')]
+        file_base_names = [splitext(file)[0] for file in listdir(images_dir) if isfile(join(images_dir, file)) and not file.startswith('.')]
 
         if not self.ids:
             raise RuntimeError(f'No input file found in {images_dir}, make sure you put your images there')
@@ -56,7 +60,7 @@ class BasicDataset(Dataset):
         logging.info('Scanning mask files to determine unique values')
         with Pool() as p:
             unique = list(tqdm(
-                p.imap(partial(unique_mask_values, mask_dir=self.mask_dir, mask_suffix=self.mask_suffix), self.ids),
+                p.imap(partial(unique_mask_values, mask_dir=self.mask_dir, mask_suffix=self.mask_suffix), file_base_names),
                 total=len(self.ids)
             ))
 
@@ -110,7 +114,7 @@ class BasicDataset(Dataset):
             return img
 
     @staticmethod
-    def preprocess(mask_values, jpeg_img, scale, is_mask):
+    def preprocess(mask_values, jpeg_img, scale, orient, is_mask):
         #if is_mask:
         #  area = (0, 775, 4000, 2275)
         #else:
@@ -122,10 +126,26 @@ class BasicDataset(Dataset):
         #assert newW > 0 and newH > 0, 'Scale is too small, resized images would have no pixel'
         #cropped_img = cropped_img.resize((newW, newH), resample=Image.NEAREST if is_mask else Image.BICUBIC)
         #img = np.asarray(cropped_img)
+        #jpeg_img = jpeg_img.rotate(-90, PIL.Image.NEAREST, expand = 1)
         w, h = jpeg_img.size
         newW, newH = int(scale * w), int(scale * h)
         assert newW > 0 and newH > 0, 'Scale is too small, resized images would have no pixel'
-        jpeg_img = jpeg_img.resize((newW, newH), resample=Image.NEAREST if is_mask else Image.BICUBIC)
+        # jpeg_img = jpeg_img.resize((newW, newH), resample=Image.NEAREST if is_mask else Image.BICUBIC)
+        
+        if orient == 0 or orient == 1:
+          if not is_mask:
+            jpeg_img = jpeg_img.transpose(Image.FLIP_TOP_BOTTOM)
+
+        if orient == 1 or orient == 3:
+            jpeg_img = jpeg_img.transpose(Image.FLIP_LEFT_RIGHT)
+
+        if orient == 2 or orient == 3:
+          if is_mask:
+            jpeg_img = jpeg_img.transpose(Image.FLIP_TOP_BOTTOM)
+        
+        
+        jpeg_img = jpeg_img.resize((newW, newH), resample=Image.NEAREST)
+        
 
         img_array = np.array(jpeg_img)
         if is_mask:
@@ -136,7 +156,7 @@ class BasicDataset(Dataset):
                 else:
                     mask[(img_array == v).all(-1)] = i
 
-            mask = np.flip(mask, 0)
+            # mask = np.flip(mask, 0)
             return mask
 
         else:
@@ -151,19 +171,17 @@ class BasicDataset(Dataset):
             return img_array
          
     def __getitem__(self, idx):
-        name = self.ids[idx]
+        name = self.ids[idx].split("_orient")[0]
         mask_file = list(self.mask_dir.glob(name + self.mask_suffix + '*'))
         img_file = list(self.images_dir.glob(name + '.*'))
 
-        # print("name = ", name)
-        # print("mask_file = ", mask_file)
-        # print("img_file = ", img_file)
         assert len(img_file) == 1, f'Either no image or multiple images found for the ID {name}: {img_file}'
         assert len(mask_file) == 1, f'Either no mask or multiple masks found for the ID {name}: {mask_file}'
         
         img = load_image(img_file[0])
-
+        # mask dimensions need to be reordered. 
         mask = load_image(mask_file[0]).transpose()
+
         mask_as_image = Image.fromarray(mask.astype('bool'))
 
 
@@ -171,19 +189,32 @@ class BasicDataset(Dataset):
             f'Image and mask {name} should be the same dim 0 size, but are {img.size} and {mask_as_image.size}'
 
 
-        img = self.preprocess(self.mask_values, img, self.scale, is_mask=False)
-        mask = self.preprocess(self.mask_values, mask_as_image, self.scale, is_mask=True)
+      
+        # normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+      
 
-        # img = self.crop_dim1(self.mask_values, img, self.scale, is_mask=False)
-        # mask = self.crop_dim1(self.mask_values, mask_as_image, self.scale, is_mask=True)
+        img = self.preprocess(self.mask_values, img, self.scale, self.orient, is_mask=False, )
+        mask = self.preprocess(self.mask_values, mask_as_image, self.scale, self.orient, is_mask=True)
+
         mask = np.asarray(mask).astype('bool')
 
         return {
-            'image': torch.as_tensor(img.copy()).float().contiguous(),
+            'image': self.normalize(torch.as_tensor(img.copy()).float().contiguous()),
             'mask': torch.as_tensor(mask.copy()).bool().contiguous()
         }
+  
+        
+
 
 
 class OkraDataset(BasicDataset):
-    def __init__(self, images_dir, mask_dir, scale=1):
-        super().__init__(images_dir, mask_dir, scale, mask_suffix='')
+    def __init__(self, images_dir, mask_dir, normalize, scale=1, orient=0):
+        super().__init__(images_dir, mask_dir, normalize, scale, orient, mask_suffix='')
+
+class OkraAugmentedDataset(torch.utils.data.ConcatDataset):
+  def __init__(self, datasets):
+    super().__init__(datasets)
+    self.ids = []
+
+    for ds in datasets :
+      self.ids = self.ids + ds.ids
