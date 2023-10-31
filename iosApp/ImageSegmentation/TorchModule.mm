@@ -65,7 +65,7 @@
         const int CLASSNUM = 1;
         const int OKRA = 0;
 
-        at::Tensor tensor = torch::from_blob(imageBuffer, { 1, 3, height, width }, at::kFloat);
+        at::Tensor tensor = torch::from_blob(imageBuffer, { 1, 3, width, height }, at::kFloat);
 
         float* floatInput = tensor.data_ptr<float>();
         if (!floatInput) {
@@ -79,12 +79,22 @@
         c10::InferenceMode guard;
         
         CFTimeInterval startTime = CACurrentMediaTime();
-        auto outputDict = _impl.forward({ tensor }).toGenericDict();
+        // auto outputDict = _impl.forward({ tensor }).toGenericDict();
+        // auto outputTensor = outputDict.at("out").toTensor();
+        
+        //void(^tuple)(at::Tensor, at::Tensor, at::Tensor, at::Tensor, at::Tensor, at::Tensor, at::Tensor) = _impl.forward({ tensor });
+        
+        auto outputTensor = _impl.forward({ tensor }).toTuple()->elements()[0].toTensor();
+        
+        //at::Tensor outputTensor, d1, d2, d3, d4, d5, d6;
+        //tuple(outputTensor, d1, d2, d3, d4, d5, d6);
+        
         CFTimeInterval elapsedTime = CACurrentMediaTime() - startTime;
         NSLog(@"inference time:%f", elapsedTime);
         
-        auto outputTensor = outputDict.at("out").toTensor();
-
+ 
+        // std::vector<at::IValue> elements = outputTuple->elements();
+        // auto outputTensor = elements[0].toTensor();
         float* floatBuffer = outputTensor.data_ptr<float>();
         if (!floatBuffer) {
             return nil;
@@ -131,13 +141,14 @@
                 */
                 
                  // mask prediction
-                Float32 mask = *((outputTensor[0][0][k][j]).data_ptr<Float32>());
+                Float32 mask = *((outputTensor[0][0][j][k]).data_ptr<Float32>());
                 int32_t imask = static_cast<int32_t>(mask);
                 
-                r = imask & 255;
-                g = (imask >> 8) & 255;
-                b = (imask >> 16) & 255;
-                a = (imask >> 24) & 255;
+                
+                r = imask * 255;
+                g = (imask >> 8) * 255;
+                b = (imask >> 16) * 255;
+                a = (imask >> 24) * 255;
                 
                 
                   // OkraSurface pixels: (112,200) imask:0 a:0 r:0 g:0 b:0
@@ -149,15 +160,17 @@
                 
                
                 
-                r = g = b = 0;
+                r = g = b = 255;
                 
-                if (imask >= -1) {
-                    r = *((tensor[0][0][k][j]).data_ptr<float>()) * 255;
-                    g = *((tensor[0][1][k][j]).data_ptr<float>()) * 255;
-                    b = *((tensor[0][2][k][j]).data_ptr<float>()) * 255;
+                if (imask == 1) {
+                    r = *((tensor[0][0][j][k]).data_ptr<float>()) * 255;
+                    g = *((tensor[0][1][j][k]).data_ptr<float>()) * 255;
+                    b = *((tensor[0][2][j][k]).data_ptr<float>()) * 255;
+                    
                 }
                 
-                int n = [self convertPixelCoordToIndex:width withPixelX:j withPixelY:k];
+                
+                int n = [self convertPixelCoordToIndex:height withPixelX:k withPixelY:j];
                 [self displayPixelColor:buffer withIndex:n withR:r withG:g withB:b];
             }
         }
