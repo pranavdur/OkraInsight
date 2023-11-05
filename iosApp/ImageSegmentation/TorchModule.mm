@@ -4,6 +4,7 @@
 // This source code is licensed under the BSD-style license found in the
 // LICENSE file in the root directory of this source tree.
 
+
 #import "TorchModule.h"
 #import "UIImageHelper.h"
 #import <CoreImage/CoreImage.h>
@@ -13,6 +14,13 @@
 @implementation TorchModule {
 @protected
     torch::jit::script::Module _impl;
+}
+
+typedef void (*callbackType)(unsigned char* outputImgBuffer, at::Tensor& inputImgTensor, at::Tensor& okraSegMask, int width, int height, int w, int h, int& inpR, int& inpG, int& inpB);
+
+static uint32_t convertPixelCoordToIndex(uint32_t width, uint32_t x, int y) {
+    int n = 3 * (y * width + x);
+    return n;
 }
 
 - (nullable instancetype)initWithFileAtPath:(NSString*)filePath {
@@ -29,153 +37,131 @@
     return self;
 }
 
-- (void)testLayoutAndOrientation:(unsigned char*)buffer withWidth:(int)width withHeight:(int)height {
+
+
+
+static void updateOutputImgColor(unsigned char* outputImgBuffer, int width, int height, int w, int h, int& r, int& g, int& b) {
+    int n = convertPixelCoordToIndex(width, w, h);
+    outputImgBuffer[n] = r; outputImgBuffer[n+1] = g; outputImgBuffer[n+2] = b;
+}
+
+// assumes given tensor shape is NCHW.
+static void copyColorFromInputImg(unsigned char* outputImgBuffer, at::Tensor& inputImgTensor, at::Tensor& okraSegMask /* Ignored */, int width, int height, int w, int h, int& inpR, int& inpG, int& inpB) {
+    
+    inpR = *((inputImgTensor[0][0][w][h]).data_ptr<float>()) * 255;
+    inpG = *((inputImgTensor[0][1][w][h]).data_ptr<float>()) * 255;
+    inpB = *((inputImgTensor[0][2][w][h]).data_ptr<float>()) * 255;
+}
+
+static void copyFromOkraSegMask(unsigned char* outputImgBuffer, at::Tensor& inputImgTensor, at::Tensor& okraSegMask, int width, int height, int w, int h, int& inpR, int& inpG, int& inpB) {
+    
+    Float32 probPixelIsOnOkra = *((okraSegMask[0][0][w][h]).data_ptr<Float32>());
+    
+    inpR = probPixelIsOnOkra * 255;
+    inpG = 0;
+    inpB = 0;
+
+}
+
+// assumes given tensor shape is NCWH.
+static void copyOkraPixelsFromInputImg(unsigned char* outputImgBuffer, at::Tensor& inputImgTensor, at::Tensor& okraSegMask, int width, int height, int w, int h, int& inpR, int& inpG, int& inpB) {
+    
+    Float32 probPixelIsOnOkra = *((okraSegMask[0][0][w][h]).data_ptr<Float32>());
+    
+    // if (h == 200)
+    //    NSLog(@"mask (%d, %d) : %f", w, h, probPixelIsOnOkra);
+    
+    if (probPixelIsOnOkra > 0.98) {
+        inpR = *((inputImgTensor[0][0][w][h]).data_ptr<float>()) * 255;
+        inpG = *((inputImgTensor[0][1][w][h]).data_ptr<float>()) * 255;
+        inpB = *((inputImgTensor[0][2][w][h]).data_ptr<float>()) * 255;
+    } else {
+        // Blacken non-Okra part of the image
+        inpR = 0;
+        inpG = 0;
+        inpB = 0;
+    }
+
+}
+
+static void drawTestBand(unsigned char* outputImgBuffer, at::Tensor& inputImgTensor /* Ignored */, at::Tensor& okraSegMask /* Ignored */, int width, int height, int w, int h, int& inpR, int& inpG, int& inpB) {
+    
+    inpR = 0;
+    inpG = 0;
+    inpB = 0;
+    
+
+    if (w > 50 && w < 150)
+        inpR = 255;
+    if (h > 350 && h < 400)
+        inpG = 255;
+    
+}
+
+static void forEachInputAndOutputImgBufferElem (callbackType getPerElemColorFn, at::Tensor& inputImgTensor, unsigned char* outputImgBuffer, at::Tensor& okraSegMask, int width, int height) {
+    
+    int inpR = 0;
+    int inpG = 0;
+    int inpB = 0;
+    
+    
+    // permuted shape: NCWH as needed by segmentation model
+    // tensor = tensor.permute({0,1,3,2});
+    
     for (int w = 0; w < width; w++) {
         for (int h = 0; h < height; h++) {
-            int n = 3 * (h * width + w);
-            buffer[n] = 0; buffer[n+1] = 0; buffer[n+2] = 0;
-            if (w > 50 && w < 150)
-                buffer[n] = 255;
-            if (h > 250 && h < 350)
-                buffer[n+1] = 255;
-            
+            getPerElemColorFn(outputImgBuffer, inputImgTensor, okraSegMask, width, height, w, h, inpR, inpG, inpB);
+            updateOutputImgColor(outputImgBuffer, width, height, w, h, inpR, inpG, inpB);
         }
     }
-    return;
 }
 
-- (uint32_t)convertPixelCoordToIndex:(uint32_t)width withPixelX:(uint32_t)x withPixelY:(int)y {
-    int n = 3 * (y * width + x);
-    return n;
+
+static void testLayoutAndOrientation(at::Tensor& inputImgTensor, unsigned char* outputImgBuffer, at::Tensor& okraSegMask, int width, int height) {
+    forEachInputAndOutputImgBufferElem(drawTestBand, inputImgTensor, outputImgBuffer, okraSegMask, width, height);
+}
+ 
+static void sanityTest1 (at::Tensor&  inputImgTensor, unsigned char* outputImgBuffer, at::Tensor& okraSegMask, int width, int height) {
+    forEachInputAndOutputImgBufferElem(copyColorFromInputImg, inputImgTensor, outputImgBuffer, okraSegMask, width, height);
 }
 
-- (void)displayPixelColor:(unsigned char*)buffer withIndex:(uint32_t)index withR:(int)r withG:(int)g withB:(int)b {
-    buffer[index] = r; buffer[index+1] = g; buffer[index+2] = b;
-    return;
+static void applyOkraSegmentMask (at::Tensor&  inputImgTensor, unsigned char* outputImgBuffer, at::Tensor& okraSegMask, int width, int height) {
+    forEachInputAndOutputImgBufferElem(copyOkraPixelsFromInputImg, inputImgTensor, outputImgBuffer, okraSegMask, width, height);
 }
 
 - (unsigned char*)segmentImage:(void *)imageBuffer withWidth:(int)width withHeight:(int)height {
     try {
         
         // see http://host.robots.ox.ac.uk:8080/pascal/VOC/voc2007/segexamples/index.html for the list of classes with indexes
-        // const int CLASSNUM = 21;
-        // const int DOG = 12;
-        // const int PERSON = 15;
-        // const int SHEEP = 17;
         const int CLASSNUM = 1;
         const int OKRA = 0;
 
-        at::Tensor tensor = torch::from_blob(imageBuffer, { 1, 3, width, height }, at::kFloat);
-
-        float* floatInput = tensor.data_ptr<float>();
-        if (!floatInput) {
-            return nil;
-        }
-        NSMutableArray* inputs = [[NSMutableArray alloc] init];
-        for (int i = 0; i < 3 * width * height; i++) {
-            [inputs addObject:@(floatInput[i])];
-        }
-
+        // native shape: NCHW
+        at::Tensor tensor = torch::from_blob(imageBuffer, { 1, 3, height, width }, at::kFloat);
+        
+        // permuted shape: NCWH as needed by segmentation model
+        tensor = tensor.permute({0,1,3,2});
+        
+    
         c10::InferenceMode guard;
         
         CFTimeInterval startTime = CACurrentMediaTime();
         // auto outputDict = _impl.forward({ tensor }).toGenericDict();
         // auto outputTensor = outputDict.at("out").toTensor();
-        
-        //void(^tuple)(at::Tensor, at::Tensor, at::Tensor, at::Tensor, at::Tensor, at::Tensor, at::Tensor) = _impl.forward({ tensor });
-        
+                
         auto outputTensor = _impl.forward({ tensor }).toTuple()->elements()[0].toTensor();
-        
-        //at::Tensor outputTensor, d1, d2, d3, d4, d5, d6;
-        //tuple(outputTensor, d1, d2, d3, d4, d5, d6);
-        
+                
         CFTimeInterval elapsedTime = CACurrentMediaTime() - startTime;
         NSLog(@"inference time:%f", elapsedTime);
         
- 
-        // std::vector<at::IValue> elements = outputTuple->elements();
-        // auto outputTensor = elements[0].toTensor();
-        float* floatBuffer = outputTensor.data_ptr<float>();
-        if (!floatBuffer) {
-            return nil;
-        }
-        NSMutableArray* results = [[NSMutableArray alloc] init];
-        for (int i = 0; i < CLASSNUM * width * height; i++) {
-            [results addObject:@(floatBuffer[i])];
-        }
-
         NSMutableData* data = [NSMutableData dataWithLength:sizeof(unsigned char) * 3 * width * height];
         unsigned char* buffer = (unsigned char*)[data mutableBytes];
         
-        // [self testLayoutAndOrientation:buffer withWidth:width withHeight:height];
-        
-        // go through each element in the output of size [WIDTH, HEIGHT] and
-        // set different color for different classnum
-        int r, g, b, a;
-        for (int j = 0; j < width; j++) {
-            for (int k = 0; k < height; k++) {
-                /*
-                int maxi = 0, maxj = 0, maxk = 0;
-                float maxnum = -100000.0;
-                for (int i = 0; i < CLASSNUM; i++) {
-                    if ([results[i * (width * height) + j * width + k] floatValue] > maxnum) {
-                        maxnum = [results[i * (width * height) + j * width + k] floatValue];
-                        maxi = i; maxj = j; maxk = k;
-                    }
-                }
 
-                int n = 3 * (maxj * width + maxk);
-                // color coding for person (red), dog (green), sheep (blue)
-                // black color for background and other classes
-                buffer[n] = 0; buffer[n+1] = 0; buffer[n+2] = 0;
-                if (maxi == PERSON) buffer[n] = 255;
-                else if (maxi == DOG) buffer[n+1] = 255;
-                else if (maxi == SHEEP) buffer[n+2] = 255;
-                */
-                
-                /*
-                 // input tensor
-                r = *((tensor[0][0][k][j]).data_ptr<float>()) * 255;
-                g = *((tensor[0][1][k][j]).data_ptr<float>()) * 255;
-                b = *((tensor[0][2][k][j]).data_ptr<float>()) * 255;
-                */
-                
-                 // mask prediction
-                Float32 mask = *((outputTensor[0][0][j][k]).data_ptr<Float32>());
-                int32_t imask = static_cast<int32_t>(mask);
-                
-                
-                r = imask * 255;
-                g = (imask >> 8) * 255;
-                b = (imask >> 16) * 255;
-                a = (imask >> 24) * 255;
-                
-                
-                  // OkraSurface pixels: (112,200) imask:0 a:0 r:0 g:0 b:0
-                  // non-OkraSurface pixels: (118,200) imask:-1 a:255 r:255 g:255 b:255
-                 
-                if (j == 102)
-                    NSLog(@"(%d,%d) imask:%d a:%d r:%d g:%d b:%d", j, k, imask, a, r,g,b);
-                
-                
-               
-                
-                r = g = b = 255;
-                
-                if (imask == 1) {
-                    r = *((tensor[0][0][j][k]).data_ptr<float>()) * 255;
-                    g = *((tensor[0][1][j][k]).data_ptr<float>()) * 255;
-                    b = *((tensor[0][2][j][k]).data_ptr<float>()) * 255;
-                    
-                }
-                
-                
-                int n = [self convertPixelCoordToIndex:height withPixelX:k withPixelY:j];
-                [self displayPixelColor:buffer withIndex:n withR:r withG:g withB:b];
-            }
-        }
-        
-
+        // testLayoutAndOrientation(tensor, buffer, outputTensor, width, height);
+        // sanityTest1(tensor, buffer, outputTensor, width, height);
+        applyOkraSegmentMask(tensor, buffer, outputTensor, width, height);
+    
         return buffer;
     } catch (const std::exception& exception) {
         NSLog(@"%s", exception.what());
@@ -184,3 +170,4 @@
 }
 
 @end
+

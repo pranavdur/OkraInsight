@@ -12,7 +12,7 @@ Original image | segment-anything predicted mask | labelme manual created mask
 
 For mobile phone friendly segmentation I evaluated 2 popular models as transfer learning student models - (1) (slightly modified [<u>DeepLab Mobile-Net v3</u>][DeepLabV3Website]) and (2) ([<u>U-2 Net</u>][U2Net]). Both these models came with training scripts which I used to train using custom images of Okra. Deeplab V3 mobilenet is most size efficient (saved trained model was 2.39GB, including the network and weights). While it produced accurate segmentation when running on Colab servers, the same saved model running in IOS simulator did not retain the accuracy. The background (non-Okra) is masked out as black and we can see non-Okra regions are not fully blacked out. The U-2 net proved more promising even though its much bigger than Deeplab V3 mobilenet, it is still 14X smaller than the master model. And even with very limited training it is already showing more promising results in terms of accuracy when run in IOS simulator. U-2 net is likely a better network for Okra segmentation and I will be trying out a more longer trained version of this network as next step. 
 
-input image (no mask) | deeplab V3 mask (black) | u-2 net mask (white)
+input image (no mask) | deeplab V3 Okra segment | u-2 net Okra segment
 --|--|--
 ![input image ](./__artifacts/ios_sim-input.png) | ![deeplabV3 ](./__artifacts/ios_sim-deeplabv3-segment.png) | ![u2net ](./__artifacts/ios_sim-u2net-segment.png)
 
