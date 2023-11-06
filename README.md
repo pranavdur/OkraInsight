@@ -47,14 +47,14 @@ ExploreOkraSegnetModel.ipynb | Use this to interactively iterate over all Okra i
 
 All these 4 notebooks can be executed in Google colab environment. To do so, copy this entire folder into Google Drive location used by your colab environment. 
 
-##  6. <a name='Trainingthemodel'></a>Training the model
+##  7. <a name='Trainingthemodel'></a>Training the model
 Based on few trials, I tuned learning rate parameter to be 0.02 and set iterations to 150 epochs. A DeeplabHead classifier with single output classification class was added to the model to generate single slass segmentation. I replaced the default loss function, nn.functional.cross_entropy(), used in pretrained deeplab v3 mobilenet with nn.BCEWithLogitsLoss() to improve segmentation accuracy. The overall loss function response in training is shown in the graph below.  
 
 [<i>images captured from wandb dashboard</i>]
 
 ![training loss ](./__artifacts/training_loss_function.png) | ![training loss ](./__artifacts/gpu_usage.png)
 
-###  6.1. <a name='Datasetpreparation'></a>Dataset preparation
+###  7.1. <a name='Datasetpreparation'></a>Dataset preparation
 
 To construct the images, I used iphone 14 to capture images of okra purchased from local grocery stores. Each okra has 2 images (posterior and anterior pose) to cover all sides of the entire Okra surface. The raw images obtained in .heic format were converted into jpeg format. These are located in the folder <span style="color:red"> training_data/okra_images </span>. The corresponding ground truth segmentation masks for each image generated using Segment-anything-model (SAM) is in the <span style="color:red">training/okra_segmentation_target_masks</span>.
 
