@@ -25,16 +25,16 @@ In order to predict if Okra will pass/fail a tip-bend test without actually bend
 The basic idea of image segmentation model is to generate a mask which is the same size as input impage, but for each corresponding image pixel, it will provide a value between 0 and 1. This value can be interpreted as weighted average of confidence of predicting the pixel in image to be class 0 (non-okra background) or class 1 (okra surface). For example, a value on 0.1 shows 90% confidence it is class 0 and 10% confidence it is class 1. In multi-class output, one mask per class is produced. In our application, the idea is to use 2 classes - one for "fresh Okra" and other for "not fresh" Okra. Since both masks are generated, we would need to select the mask which has higher avergage "confidence" as the winning class. 
 
 
-
-
 ##  3. <a name='MLtrainingpipeline'></a>ML training pipeline 
 ![ Inference Pipeline ](./__artifacts/colab_training_pipeline.png)
 
 ##  4. <a name='MLinferencepipeline'></a>ML inference pipeline 
 ![ Inference Pipeline ](./__artifacts/ios_inference_pipeline.png)
 
+##  5. <a name='MLinputResponse'></a>Input stimulus and response curves
+![ Response Curves ](./__artifacts/model_input_response.png)
 
-##  5. <a name='Howtorunthecode'></a>How to run the code
+##  6. <a name='Howtorunthecode'></a>How to run the code
 All the executable code is organized into 4 Jupyter notebooks. 
 Notebook | Purpose
 --|--
