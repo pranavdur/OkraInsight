@@ -1,87 +1,248 @@
-# Semantic Image Segmentation DeepLabV3 with Mobile Interpreter on iOS
+# Classifying Images with Vision and Core ML
 
-## Introduction
+Crop and scale photos using the Vision framework and classify them with a Core ML model.
 
-This repo offers a Python script that converts the [PyTorch DeepLabV3 model](https://pytorch.org/hub/pytorch_vision_deeplabv3_resnet101) to both the Full JIT and the Lite/Mobile Interpreter versions and an iOS app that uses the Full JIT model to segment images. Steps of how to prepare the Lite model and make the code changes in the Xcode project to use the Lite model are also provided.
+## Overview
+The app in this sample identifies the most prominent object in an image by using MobileNet,
+an open source image classifier model that recognizes around 1,000 different categories.
 
-## Prerequisites
+![Screenshots of the app identifying a monarch butterfly, broccoli, and a daisy in a field.](Documentation/Screenshots@2x.png)
 
-* PyTorch 1.10 and torchvision 0.11 (Optional)
-* Python 3.8 or above (Optional)
-* iOS Cocoapods LibTorch 1.10.0 or LibTorch-Lite 1.10.0
-* Xcode 12.4 or later
+Each time a user selects a photo from the library or takes a photo with a camera,
+the app passes it to a [Vision][Vision] image classification request.
+Vision resizes and crops the photo to meet the MobileNet model's constraints for its image input,
+and then passes the photo to the model using the [Core ML][Core ML] framework behind the scenes.
+Once the model generates a prediction, Vision relays it back to the app, which presents the results to the user.
 
-## Quick Start
+[Vision]: https://developer.apple.com/documentation/vision
+[Core ML]: https://developer.apple.com/documentation/coreml
 
-To Test Run the Image Segmentation iOS App, follow the steps below:
+The sample uses MobileNet as an example of how to use a third-party Core ML model.
+You can download open source models --- including a newer version of MobileNet --- on the
+[Core ML model gallery][Core ML model gallery].
 
-### 1. Prepare the Model
+[Core ML model gallery]: https://developer.apple.com/machine-learning/models
 
-If you don't have the PyTorch environment set up to run the script below to generate the full JIT model file, you can download it to the `ios-demo-app/ImageSegmentation` folder using the link [here](https://pytorch-mobile-demo-apps.s3.us-east-2.amazonaws.com/deeplabv3_scripted.pt).
+Before you integrate a third-party model to solve a problem
+--- which may increase the size of your app --- consider using an API in the SDK.
+For example, the [Vision][Vision] framework's [VNClassifyImageRequest][VNClassifyImageRequest] class offers the same
+functionality as MobileNet, but with potentially better performance and without increasing the size of your app
+(see [Classifying Images for Categorization and Search][Classifying Images for Categorization and Search]).
 
-Open a Terminal, first install PyTorch 1.10 and torchvision 0.11 using command like `pip install torch torchvision`, then run the following commands:
+[Classifying Images for Categorization and Search]: https://developer.apple.com/documentation/vision/classifying_images_for_categorization_and_search
+[VNClassifyImageRequest]: https://developer.apple.com/documentation/vision/vnclassifyimagerequest
 
+- Note: You can make a custom image classifier that identifies your choice of object types with [Create ML][Create ML].
+See [Creating an Image Classifier Model][Creating an Image Classifier Model]
+to learn how to create a custom image classifier that can replace the MobileNet model in this sample.
+
+[Create ML]: https://developer.apple.com/documentation/createml
+[Creating an Image Classifier Model]: https://developer.apple.com/documentation/createml/creating-an-image-classifier-model
+
+## Configure the Sample Code Project
+
+The sample targets iOS 14 or later, but the MobileNet model in the project works with:
+
+- iOS 11 or later
+- macOS 10.13 or later
+
+To take photos within the app, run the sample on a device with a camera.
+Otherwise, you can select photos from the library in Simulator.
+
+- Note: Add your own photos to the photo library in Simulator by dragging photos onto its window.
+
+## Create an Image Classifier Instance
+
+At launch, the [`ImagePredictor`][ImagePredictor] class creates an image classifier singleton by calling its
+[`createImageClassifier()`][createImageClassifier] type method.
+
+[ImagePredictor]: x-source-tag://ImagePredictor
+[createImageClassifier]: x-source-tag://createImageClassifier
+
+``` swift
+/// - Tag: name
+static func createImageClassifier() -> VNCoreMLModel {
+    // Use a default model configuration.
+    let defaultConfig = MLModelConfiguration()
+
+    // Create an instance of the image classifier's wrapper class.
+    let imageClassifierWrapper = try? MobileNet(configuration: defaultConfig)
+
+    guard let imageClassifier = imageClassifierWrapper else {
+        fatalError("App failed to create an image classifier model instance.")
+    }
+
+    // Get the underlying model instance.
+    let imageClassifierModel = imageClassifier.model
+
+    // Create a Vision instance using the image classifier's model instance.
+    guard let imageClassifierVisionModel = try? VNCoreMLModel(for: imageClassifierModel) else {
+        fatalError("App failed to create a `VNCoreMLModel` instance.")
+    }
+
+    return imageClassifierVisionModel
+}
 ```
-git clone https://github.com/pytorch/ios-demo-app
-cd ios-demo-app/ImageSegmentation
-python deeplabv3.py
+
+The method creates a Core ML model instance for Vision by:
+
+1. Creating an instance of the model's wrapper class that Xcode auto-generates at compile time
+2. Retrieving the wrapper class instance's underlying ['MLModel'][MLModel] property
+3. Passing the model instance to a [`VNCoreMLModel`][VNCoreMLModel] initializer
+
+[MLModel]: https://developer.apple.com/documentation/coreml/mlmodel
+[VNCoreMLModel]: https://developer.apple.com/documentation/vision/vncoremlmodel
+
+The Image Predictor class minimizes runtime by only creating a single instance
+it shares across the app.
+
+- Note: Share a single [`VNCoreMLModel`][VNCoreMLModel] instance for each Core ML model
+in your project.
+
+## Create an Image Classification Request
+
+The Image Predictor class creates an image classification request ---
+a [`VNCoreMLRequest`][VNCoreMLRequest] instance ---
+by passing the shared image classifier model instance and a request handler to its initializer.
+
+[VNCoreMLRequest]: https://developer.apple.com/documentation/vision/vncoremlrequest
+
+``` swift
+// Create an image classification request with an image classifier model.
+
+let imageClassificationRequest = VNCoreMLRequest(model: ImagePredictor.imageClassifier,
+                                                 completionHandler: visionRequestHandler)
+
+imageClassificationRequest.imageCropAndScaleOption = .centerCrop
 ```
 
-The Python script `deeplabv3.py` is used to generate both the full JIT and the Lite Interpreter model files `deeplabv3_scripted.pt` and `deeplabv3_scripted.ptl` to be used in iOS.
+The method tells Vision how to adjust images that don't meet the model's image input constraints
+by setting the request's [`imageCropAndScaleOption`][imageCropAndScaleOption] property to
+[`centerCrop`][centerCrop].
 
-### 2. Use LibTorch
+[imageCropAndScaleOption]: https://developer.apple.com/documentation/vision/vncoremlrequest/2890144-imagecropandscaleoption
+[centerCrop]: https://developer.apple.com/documentation/vision/vnimagecropandscaleoption/centercrop
 
-Run the commands below (note the `Podfile` uses `pod 'LibTorch', '~>1.10.0'`):
+## Create a Request Handler
 
-```
-pod install
-open ImageSegmentation.xcworkspace
-```
+The Image Predictor's [`makePredictions(for photo, ...)`][makePredictions] method creates a
+[`VNImageRequestHandler`][VNImageRequestHandler]
+for each image by passing the image and its orientation to the initializer.
 
-### 3. Run the app
-Select an iOS simulator or device on Xcode to run the app. The example image and its segmented result are as follows:
+[makePredictions]: x-source-tag://makePredictions
+[VNImageRequestHandler]: https://developer.apple.com/documentation/vision/vnimagerequesthandler
 
-![](screenshot1.png)
-![](screenshot2.png)
-
-Note that the `resized` method in `UIImage+Helper.swift` is used to speed up the model inference, but a smaller size may cause the result to be less accurate.
-
-## Using the Lite/Mobile Interpreter Model
-
-All the other iOS demo apps have been converted to use the new Mobile Interpreter model, except this Image Segmentation demo app, which is used to illustrate how to convert a demo using a full JIT model to one using the mobile interpreter model, by following 3 simple steps.
-
-### 1. Prepare the Lite model
-
-If you don't have the PyTorch environment set up to run the script `deeplabv3.py` to generate the mobile interpreter model file, you can download it to the `ios-demo-app/ImageSegmentation` folder using the link [here](https://pytorch-mobile-demo-apps.s3.us-east-2.amazonaws.com/deeplabv3_scripted.ptl). Otherwise, or if you prefer to run the script to generate the model yourself, just run `python deeplabv3.py`.
-
-Note that to save a model in the mobile interpreter format, simply call `_save_for_lite_interpreter`, as shown at the end of the `deeplabv3.py`:
-```
-optimized_model.save("ImageSegmentation/deeplabv3_scripted.pt")
-optimized_model._save_for_lite_interpreter("ImageSegmentation/deeplabv3_scripted.ptl")
+``` swift
+let handler = VNImageRequestHandler(cgImage: photoImage, orientation: orientation)
 ```
 
-### 2. Modify the Podfile
+Vision rotates the image based on `orientation`
+--- a [`CGImagePropertyOrientation`][CGImagePropertyOrientation] instance ---
+before sending the image to the model.
 
-If you already went through the previous section and have the demo using the full JIT model up and running, close Xcode, go to the `ios-demo-app/ImageSegmentation` directory and run `pod deintegrate` first.
+[CGImagePropertyOrientation]: https://developer.apple.com/documentation/imageio/cgimagepropertyorientation
 
-In `Podfile`, change `pod 'LibTorch', '~>1.10.0'` to `pod 'LibTorch-Lite', '~>1.10.0'`
+If the image you want to classify has a URL, create a Vision image request handler with one of these initializers:
+* [`VNImageRequestHandler(url:options:)`][VNImageRequestHandler(url:options:)]
+* [`VNImageRequestHandler(url:orientation:options:)`][VNImageRequestHandler(url:orientation:options:)]
 
-Then run `pod install` and `open ImageSegmentation.xcworkspace`. Don't forget to drag and drop the `deeplabv3_scripted.ptl` file from step 1 to the project.
+[VNImageRequestHandler(url:options:)]: https://developer.apple.com/documentation/vision/vnimagerequesthandler/2866553-init
+[VNImageRequestHandler(url:orientation:options:)]: https://developer.apple.com/documentation/vision/vnimagerequesthandler/2869645-init
 
-### 3. Change the iOS code
+## Start the Request
+The [`makePredictions(for photo, ...)`][makePredictions] method starts the request by adding it into a
+[`VNRequest`][VNRequest] array and passes it to the handler's [`perform(_:)`][VNImageRequestHandler.perform] method.
 
-In `TorchModule.mm`, make the following changes:
-* Change `#import <LibTorch/LibTorch.h>` to `#import <Libtorch-Lite/Libtorch-Lite.h>`
-* Change `@protected torch::jit::script::Module _impl;` to `@protected torch::jit::mobile::Module _impl;`
-* Change `_impl = torch::jit::load(filePath.UTF8String);` to `_impl = torch::jit::_load_for_mobile(filePath.UTF8String);`
-* Delete `_impl.eval();`
+[VNRequest]: https://developer.apple.com/documentation/vision/vnrequest
+[VNImageRequestHandler.perform]: https://developer.apple.com/documentation/vision/vnimagerequesthandler/2880297-perform
 
-Finally, in ViewController.swift, modify `pt` in `Bundle.main.path(forResource: "deeplabv3_scripted", ofType: "pt")` to `ptl`.
+``` swift
+let requests: [VNRequest] = [imageClassificationRequest]
 
-Now you can build and run the app using the Lite/Mobile interpreter model.
+// Start the image classification request.
+try handler.perform(requests)
+```
 
-## Tutorial
+- Note: You can perform multiple Vision requests on the same image by adding each request to the array you pass
+to the [`perform(_:)`][VNImageRequestHandler.perform] method's `requests` parameter.
 
-Read the tutorial [here](https://pytorch.org/tutorials/beginner/deeplabv3_on_ios.html) for detailed step-by-step instructions of how to prepare and run the [PyTorch DeepLabV3 model](https://pytorch.org/hub/pytorch_vision_deeplabv3_resnet101) on iOS, as well as practical tips on how to successfully use a pre-trained PyTorch model on iOS and avoid common pitfalls.
+## Retrieve the Request's Results
 
-For more information on using Mobile Interpreter in Android, see the tutorial [here](https://pytorch.org/tutorials/recipes/mobile_interpreter.html).
+When the image classification request is finished, Vision notifies the Image Predictor
+by calling the request's completion handler, [`visionRequestHandler(_:error:)`][visionRequestHandler].
+The method retrieves the request's [`results`][VNRequest.results] by:
+
+[visionRequestHandler]: x-source-tag://visionRequestHandler
+[VNRequest.results]: https://developer.apple.com/documentation/vision/vnrequest/2867238-results
+
+1. Checking the `error` parameter
+2. Casting [`results`][VNRequest.results]
+to a [`VNClassificationObservation`][VNClassificationObservation] array
+
+[VNClassificationObservation]: https://developer.apple.com/documentation/vision/vnclassificationobservation
+
+``` swift
+// Cast the request's results as an `VNClassificationObservation` array.
+guard let observations = request.results as? [VNClassificationObservation] else {
+    // Image classifiers, like MobileNet, only produce classification observations.
+    // However, other Core ML model types can produce other observations.
+    // For example, a style transfer model produces `VNPixelBufferObservation` instances.
+    print("VNRequest produced the wrong result type: \(type(of: request.results)).")
+    return
+}
+
+// Create a prediction array from the observations.
+predictions = observations.map { observation in
+    // Convert each observation into an `ImagePredictor.Prediction` instance.
+    Prediction(classification: observation.identifier,
+               confidencePercentage: observation.confidencePercentageString)
+}
+```
+
+The Image Predictor converts each result to [`Prediction`][Prediction] instances,
+a simple structure with two string properties.
+
+[Prediction]: x-source-tag://Prediction
+
+The method sends the `predictions` array to the Image Predictor's client --- the main view controller ---
+by calling the client's completion handler.
+
+``` swift
+// Send the predictions back to the client.
+predictionHandler(predictions)
+```
+
+## Format and Present the Predictions
+
+The main view controller's [`imagePredictionHandler(_:)`][imagePredictionHandler] method formats the
+individual predictions into a single string and updates a label in the app's UI using helper methods.
+
+[imagePredictionHandler]: x-source-tag://imagePredictionHandler
+
+``` swift
+private func imagePredictionHandler(_ predictions: [ImagePredictor.Prediction]?) {
+    guard let predictions = predictions else {
+        updatePredictionLabel("No predictions. (Check console log.)")
+        return
+    }
+
+    let formattedPredictions = formatPredictions(predictions)
+
+    let predictionString = formattedPredictions.joined(separator: "\n")
+    updatePredictionLabel(predictionString)
+}
+```
+
+The [`updatePredictionLabel(_:)`][updatePredictionLabel] helper method safely updates the UI by updating
+the label's text on the main dispatch queue.
+
+[updatePredictionLabel]: x-source-tag://updatePredictionLabel
+
+``` swift
+func updatePredictionLabel(_ message: String) {
+    DispatchQueue.main.async {
+        self.predictionLabel.text = message
+    }
+```
+
+- Important: Keep your app's UI responsive by making predictions with Core ML models off of the main thread.
