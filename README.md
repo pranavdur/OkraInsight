@@ -10,6 +10,7 @@
 * 8. [Deploying to your iPhone for testing](#DeployingtoyouriPhonefortesting)
 	* 8.1. [Pair your iphone with Xcode](#PairyouriphonewithXcode)
 	* 8.2. [Set your iphone as Run destination](#SetyouriphoneasRundestination)
+* 9. [9. Future work](#Futurework)
 
 <!-- vscode-markdown-toc-config
 	numbering=true
@@ -88,3 +89,8 @@ To construct the images, I used iphone 14 to capture images of okra purchased fr
 
 ![iphone screenshot1 ](./__artifacts/iphone_screenshot_setup.png) | ![iphone screenshot2 ](./__artifacts/iphone_screenshot_badokra.png) | ![iphone screenshot3 ](./__artifacts/iphone_screenshot_goodokra.png)
 --|--|--
+
+##  9. <a name='Limitationa and futurework'></a>Limitations and future work
+- Model is currently trained with limited data augmentation and data set size (30 unique Okra images). Hence for best results, single Okra should be placed on a near white background with full vertical length of Okra just fitting within the screen. Because the App is very sensitive to image noise at the moment, taking pictures of same Okra from different angles and positions might result in different classifications. To make this more resilient to real world noise, image normalization and rotating images to various angles as well as different zoom levels would significantly help.
+
+
