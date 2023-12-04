@@ -3,9 +3,13 @@
 * 2. [Overview](#Overview)
 * 3. [ML training pipeline](#MLtrainingpipeline)
 * 4. [ML inference pipeline](#MLinferencepipeline)
-* 5. [How to run the code](#Howtorunthecode)
-* 6. [Training the model](#Trainingthemodel)
-	* 6.1. [Dataset preparation](#Datasetpreparation)
+* 5. [Input stimulus and response curves](#Inputstimulusandresponsecurves)
+* 6. [How to run the code](#Howtorunthecode)
+* 7. [Training the model](#Trainingthemodel)
+	* 7.1. [Dataset preparation](#Datasetpreparation)
+* 8. [Deploying to your iPhone for testing](#DeployingtoyouriPhonefortesting)
+	* 8.1. [Pair your iphone with Xcode](#PairyouriphonewithXcode)
+	* 8.2. [Set your iphone as Run destination](#SetyouriphoneasRundestination)
 
 <!-- vscode-markdown-toc-config
 	numbering=true
@@ -31,7 +35,7 @@ The basic idea of image segmentation model is to generate a mask which is the sa
 ##  4. <a name='MLinferencepipeline'></a>ML inference pipeline 
 ![ Inference Pipeline ](./__artifacts/ios_inference_pipeline.png)
 
-##  5. <a name='MLinputResponse'></a>Input stimulus and response curves
+##  5. <a name='Inputstimulusandresponsecurves'></a>Input stimulus and response curves
 ![ Response Curves ](./__artifacts/model_input_response.png)
 
 ##  6. <a name='Howtorunthecode'></a>How to run the code
@@ -58,7 +62,17 @@ Based on few trials, I tuned learning rate parameter to be 0.02 and set iteratio
 
 To construct the images, I used iphone 14 to capture images of okra purchased from local grocery stores. Each okra has 2 images (posterior and anterior pose) to cover all sides of the entire Okra surface. The raw images obtained in .heic format were converted into jpeg format. These are located in the folder <span style="color:red"> training_data/okra_images </span>. The corresponding ground truth segmentation masks for each image generated using Segment-anything-model (SAM) is in the <span style="color:red">training/okra_segmentation_target_masks</span>.
 
+##  8. <a name='DeployingtoyouriPhonefortesting'></a>Deploying to your iPhone for testing
 
+###  8.1. <a name='PairyouriphonewithXcode'></a>Pair your iphone with Xcode 
+(_Instructions that work with iPhone 12/13/14 on ios17 with Xcode 15_)
+- Open Xcode and go to Window > Devices and Simulators.
+- Plug your iOS device into your Mac using a lightning cable. You may need to select to Trust This Computer on your device.
+- Select your device and then select the Connect via network checkbox to pair your device.
+- Open your project on Xcode.
+- Plug in your iPhone with USB cable.
+- Open Window > Devices and Simulators. You should see your device as connected devices.
+- Select Devices from the top, Select your device from left and Check the “Connect via network” box.
 
 [DeepLabV3Website]: <https://github.com/pytorch/vision/tree/main/references/segmentation> "example text"
 [SAMGithub]: <https://github.com/facebookresearch/segment-anything>
@@ -67,3 +81,10 @@ To construct the images, I used iphone 14 to capture images of okra purchased fr
 [PytorchUnet]: <https://github.com/milesial/Pytorch-UNet/tree/master>
 [DeeplabOnIOS]: <https://pytorch.org/tutorials/beginner/deeplabv3_on_ios.html>
 [U2Net]: <https://github.com/xuebinqin/U-2-Net>
+
+###  8.2. <a name='SetyouriphoneasRundestination'></a>Set your iphone as Run destination
+- In the Xcode, pull down menu in top bar and make sure your iphone device is selected
+- Trigger build and run. This step will automatically compile App, transfer compiled executable to your iPhone and launch the App on your iPhone.
+
+![iphone screenshot1 ](./__artifacts/iphone_screenshot_setup.png) | ![iphone screenshot2 ](./__artifacts/iphone_screenshot_badokra.png) | ![iphone screenshot3 ](./__artifacts/iphone_screenshot_goodokra.png)
+--|--|--
