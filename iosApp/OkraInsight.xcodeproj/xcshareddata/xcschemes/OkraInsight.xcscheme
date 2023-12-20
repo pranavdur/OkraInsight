@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "11063F5D1EC0EECC0033EE6D"
-               BuildableName = "Vision + CoreML.app"
-               BlueprintName = "Vision + CoreML"
-               ReferencedContainer = "container:Vision+Core-ML.xcodeproj">
+               BuildableName = "OkraInsight.app"
+               BlueprintName = "OkraInsight"
+               ReferencedContainer = "container:OkraInsight.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -45,9 +45,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "11063F5D1EC0EECC0033EE6D"
-            BuildableName = "Vision + CoreML.app"
-            BlueprintName = "Vision + CoreML"
-            ReferencedContainer = "container:Vision+Core-ML.xcodeproj">
+            BuildableName = "OkraInsight.app"
+            BlueprintName = "OkraInsight"
+            ReferencedContainer = "container:OkraInsight.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -62,9 +62,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "11063F5D1EC0EECC0033EE6D"
-            BuildableName = "Vision + CoreML.app"
-            BlueprintName = "Vision + CoreML"
-            ReferencedContainer = "container:Vision+Core-ML.xcodeproj">
+            BuildableName = "OkraInsight.app"
+            BlueprintName = "OkraInsight"
+            ReferencedContainer = "container:OkraInsight.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

@@ -20,6 +20,8 @@
 
 # OkraInsight : Real-time mobile app deployable machine learning based Okra segmentation
 
+(Note: <I>This is now available for download and trying on you IOS device at [<u>Apple App store</u>][iosApp]</I>)
+
 ##  1. <a name='Motivation'></a>Motivation
 The intended impact of this application is to give non-expert users an alternative way to pick right Okra at the grocery store without resorting to destructive (and often discouraged) tip-break-off test. The destructive testing actually contributes to food spoilage and wastage. This act of mutilation leaves "test failed" Okra to be dumped back into the pile along with prospective good Okra. But doing so reduces the likelyhood of even the good ones in the rest of the pile from getting sold. Hence, many vendors explicitly place a notice asking customers not to break Okra to test. And some vendors package them so customers can see but cannot individually break-test before purchase. This iphone based aplication is a cleaner alternative to selecting Okra at your next grocery purchase!
 
@@ -75,14 +77,6 @@ To construct the images, I used iphone 14 to capture images of okra purchased fr
 - Open Window > Devices and Simulators. You should see your device as connected devices.
 - Select Devices from the top, Select your device from left and Check the “Connect via network” box.
 
-[DeepLabV3Website]: <https://github.com/pytorch/vision/tree/main/references/segmentation> "example text"
-[SAMGithub]: <https://github.com/facebookresearch/segment-anything>
-[SAMWebsite]: <https://ai.meta.com/research/publications/segment-anything/>
-[LabelmeWebsite]: <http://labelme.csail.mit.edu/guidelines.html>
-[PytorchUnet]: <https://github.com/milesial/Pytorch-UNet/tree/master>
-[DeeplabOnIOS]: <https://pytorch.org/tutorials/beginner/deeplabv3_on_ios.html>
-[U2Net]: <https://github.com/xuebinqin/U-2-Net>
-
 ###  8.2. <a name='SetyouriphoneasRundestination'></a>Set your iphone as Run destination
 - In the Xcode, pull down menu in top bar and make sure your iphone device is selected
 - Trigger build and run. This step will automatically compile App, transfer compiled executable to your iPhone and launch the App on your iPhone.
@@ -94,3 +88,11 @@ To construct the images, I used iphone 14 to capture images of okra purchased fr
 - Model is currently trained with limited data augmentation and data set size (30 unique Okra images). Hence for best results, single Okra should be placed on a near white background with full vertical length of Okra just fitting within the screen. Because the App is very sensitive to image noise at the moment, taking pictures of same Okra from different angles and positions might result in different classifications. To make this more resilient to real world noise, image normalization and rotating images to various angles as well as different zoom levels would significantly help.
 
 
+[DeepLabV3Website]: <https://github.com/pytorch/vision/tree/main/references/segmentation> "example text"
+[SAMGithub]: <https://github.com/facebookresearch/segment-anything>
+[SAMWebsite]: <https://ai.meta.com/research/publications/segment-anything/>
+[LabelmeWebsite]: <http://labelme.csail.mit.edu/guidelines.html>
+[PytorchUnet]: <https://github.com/milesial/Pytorch-UNet/tree/master>
+[DeeplabOnIOS]: <https://pytorch.org/tutorials/beginner/deeplabv3_on_ios.html>
+[U2Net]: <https://github.com/xuebinqin/U-2-Net>
+[iosApp]: <https://apps.apple.com/us/app/okrainsight/id6473683764>

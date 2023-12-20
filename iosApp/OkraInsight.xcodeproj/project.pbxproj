@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 54;
+	objectVersion = 60;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -12,20 +12,19 @@
 		11063F691EC0EECC0033EE6D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 11063F681EC0EECC0033EE6D /* Assets.xcassets */; };
 		11063F741EC0F5270033EE6D /* CGImagePropertyOrientation+UIImageOrientation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11063F731EC0F5270033EE6D /* CGImagePropertyOrientation+UIImageOrientation.swift */; };
 		A69DC73F2B1A33C7008C0183 /* UIImage+MLShapedArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = A69DC73E2B1A33C7008C0183 /* UIImage+MLShapedArray.swift */; };
+		A69DC7452B1CECDB008C0183 /* OkraInsight_120x120.png in Resources */ = {isa = PBXBuildFile; fileRef = A69DC7442B1CECDB008C0183 /* OkraInsight_120x120.png */; };
+		A69DC7502B1CF9EF008C0183 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A69DC74E2B1CF9EF008C0183 /* Main.storyboard */; };
 		A6A24AAE2B07E25A00F68F54 /* okra.jpg in Resources */ = {isa = PBXBuildFile; fileRef = A6A24AAD2B07E25A00F68F54 /* okra.jpg */; };
 		A6AD1C0E2B09974A00481200 /* okra_u2net_tensorin.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = A6AD1C0D2B09974A00481200 /* okra_u2net_tensorin.mlmodel */; };
 		A6AD1C102B0A6C8500481200 /* UIImage+Helper.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6AD1C0F2B0A6C8500481200 /* UIImage+Helper.swift */; };
 		A6AD1C142B0AC5B500481200 /* UIImageHelper.mm in Sources */ = {isa = PBXBuildFile; fileRef = A6AD1C122B0AC5B500481200 /* UIImageHelper.mm */; };
-		EB6D4EB526BA5A0000DCF755 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EB6D4EB326BA5A0000DCF755 /* LaunchScreen.storyboard */; };
-		EB6D4EBA26BA5A2F00DCF755 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EB6D4EB826BA5A2F00DCF755 /* Main.storyboard */; };
 		EB9D7ECA26C2D39400039949 /* MainViewController+PhotoPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB9D7EC926C2D39400039949 /* MainViewController+PhotoPicker.swift */; };
 		EB9D7ECC26C2D5F800039949 /* MainViewController+CameraPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB9D7ECB26C2D5F800039949 /* MainViewController+CameraPicker.swift */; };
-		EB9D7ECE26C2D78300039949 /* ImagePredictor.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB9D7ECD26C2D78300039949 /* ImagePredictor.swift */; };
 		EBE769EA26CC7DDD002B6CF0 /* VNClassificationObservation+confidenceString.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBE769E926CC7DDD002B6CF0 /* VNClassificationObservation+confidenceString.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		11063F5E1EC0EECC0033EE6D /* Vision + CoreML.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Vision + CoreML.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		11063F5E1EC0EECC0033EE6D /* OkraInsight.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OkraInsight.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		11063F611EC0EECC0033EE6D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		11063F631EC0EECC0033EE6D /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		11063F681EC0EECC0033EE6D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -34,6 +33,8 @@
 		7A862B3053580E92D52AA6E3 /* SampleCode.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = SampleCode.xcconfig; path = Configuration/SampleCode.xcconfig; sourceTree = "<group>"; };
 		83D09BCE84BD8F0B0100E8B3 /* LICENSE.txt */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = LICENSE.txt; sourceTree = "<group>"; };
 		A69DC73E2B1A33C7008C0183 /* UIImage+MLShapedArray.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "UIImage+MLShapedArray.swift"; path = "Main View/UIImage+MLShapedArray.swift"; sourceTree = "<group>"; };
+		A69DC7442B1CECDB008C0183 /* OkraInsight_120x120.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = OkraInsight_120x120.png; sourceTree = "<group>"; };
+		A69DC74F2B1CF9EF008C0183 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = "Main View/Base.lproj/Main.storyboard"; sourceTree = "<group>"; };
 		A6A24AAD2B07E25A00F68F54 /* okra.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = okra.jpg; sourceTree = SOURCE_ROOT; };
 		A6AD1C0D2B09974A00481200 /* okra_u2net_tensorin.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = okra_u2net_tensorin.mlmodel; sourceTree = "<group>"; };
 		A6AD1C0F2B0A6C8500481200 /* UIImage+Helper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Helper.swift"; sourceTree = "<group>"; };
@@ -41,11 +42,8 @@
 		A6AD1C122B0AC5B500481200 /* UIImageHelper.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = UIImageHelper.mm; sourceTree = "<group>"; };
 		A6AD1C132B0AC5B500481200 /* UIImageHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIImageHelper.h; sourceTree = "<group>"; };
 		C858E5CC1ECA99CC006C5CAA /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
-		EB6D4EB426BA5A0000DCF755 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
-		EB6D4EB926BA5A2F00DCF755 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		EB9D7EC926C2D39400039949 /* MainViewController+PhotoPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MainViewController+PhotoPicker.swift"; sourceTree = "<group>"; };
 		EB9D7ECB26C2D5F800039949 /* MainViewController+CameraPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MainViewController+CameraPicker.swift"; sourceTree = "<group>"; };
-		EB9D7ECD26C2D78300039949 /* ImagePredictor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePredictor.swift; sourceTree = "<group>"; };
 		EBE769E926CC7DDD002B6CF0 /* VNClassificationObservation+confidenceString.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "VNClassificationObservation+confidenceString.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -87,7 +85,7 @@
 		11063F5F1EC0EECC0033EE6D /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				11063F5E1EC0EECC0033EE6D /* Vision + CoreML.app */,
+				11063F5E1EC0EECC0033EE6D /* OkraInsight.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -95,9 +93,10 @@
 		11063F601EC0EECC0033EE6D /* App */ = {
 			isa = PBXGroup;
 			children = (
+				A69DC74E2B1CF9EF008C0183 /* Main.storyboard */,
+				A69DC7442B1CECDB008C0183 /* OkraInsight_120x120.png */,
 				11063F6D1EC0EECC0033EE6D /* Info.plist */,
 				11063F611EC0EECC0033EE6D /* AppDelegate.swift */,
-				EB6D4EB326BA5A0000DCF755 /* LaunchScreen.storyboard */,
 				11063F681EC0EECC0033EE6D /* Assets.xcassets */,
 			);
 			path = App;
@@ -120,7 +119,6 @@
 				11063F631EC0EECC0033EE6D /* MainViewController.swift */,
 				EB9D7ECB26C2D5F800039949 /* MainViewController+CameraPicker.swift */,
 				EB9D7EC926C2D39400039949 /* MainViewController+PhotoPicker.swift */,
-				EB6D4EB826BA5A2F00DCF755 /* Main.storyboard */,
 				A6AD1C0F2B0A6C8500481200 /* UIImage+Helper.swift */,
 				A6AD1C112B0AC5B500481200 /* Vision + CoreML-Bridging-Header.h */,
 			);
@@ -147,7 +145,6 @@
 		EBB87B3126C2EC2300AB49D8 /* Image Predictor */ = {
 			isa = PBXGroup;
 			children = (
-				EB9D7ECD26C2D78300039949 /* ImagePredictor.swift */,
 			);
 			path = "Image Predictor";
 			sourceTree = "<group>";
@@ -155,9 +152,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		11063F5D1EC0EECC0033EE6D /* Vision + CoreML */ = {
+		11063F5D1EC0EECC0033EE6D /* OkraInsight */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 11063F701EC0EECC0033EE6D /* Build configuration list for PBXNativeTarget "Vision + CoreML" */;
+			buildConfigurationList = 11063F701EC0EECC0033EE6D /* Build configuration list for PBXNativeTarget "OkraInsight" */;
 			buildPhases = (
 				11063F5A1EC0EECC0033EE6D /* Sources */,
 				11063F5B1EC0EECC0033EE6D /* Frameworks */,
@@ -167,9 +164,9 @@
 			);
 			dependencies = (
 			);
-			name = "Vision + CoreML";
+			name = OkraInsight;
 			productName = "Vision+ML Example";
-			productReference = 11063F5E1EC0EECC0033EE6D /* Vision + CoreML.app */;
+			productReference = 11063F5E1EC0EECC0033EE6D /* OkraInsight.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -190,8 +187,8 @@
 					};
 				};
 			};
-			buildConfigurationList = 11063F591EC0EECC0033EE6D /* Build configuration list for PBXProject "Vision+Core-ML" */;
-			compatibilityVersion = "Xcode 8.0";
+			buildConfigurationList = 11063F591EC0EECC0033EE6D /* Build configuration list for PBXProject "OkraInsight" */;
+			compatibilityVersion = "Xcode 15.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -203,7 +200,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				11063F5D1EC0EECC0033EE6D /* Vision + CoreML */,
+				11063F5D1EC0EECC0033EE6D /* OkraInsight */,
 			);
 		};
 /* End PBXProject section */
@@ -214,9 +211,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				A6A24AAE2B07E25A00F68F54 /* okra.jpg in Resources */,
-				EB6D4EBA26BA5A2F00DCF755 /* Main.storyboard in Resources */,
-				EB6D4EB526BA5A0000DCF755 /* LaunchScreen.storyboard in Resources */,
+				A69DC7452B1CECDB008C0183 /* OkraInsight_120x120.png in Resources */,
 				11063F691EC0EECC0033EE6D /* Assets.xcassets in Resources */,
+				A69DC7502B1CF9EF008C0183 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -236,7 +233,6 @@
 				11063F621EC0EECC0033EE6D /* AppDelegate.swift in Sources */,
 				A6AD1C142B0AC5B500481200 /* UIImageHelper.mm in Sources */,
 				A69DC73F2B1A33C7008C0183 /* UIImage+MLShapedArray.swift in Sources */,
-				EB9D7ECE26C2D78300039949 /* ImagePredictor.swift in Sources */,
 				EB9D7ECC26C2D5F800039949 /* MainViewController+CameraPicker.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -244,18 +240,10 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
-		EB6D4EB326BA5A0000DCF755 /* LaunchScreen.storyboard */ = {
+		A69DC74E2B1CF9EF008C0183 /* Main.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
-				EB6D4EB426BA5A0000DCF755 /* Base */,
-			);
-			name = LaunchScreen.storyboard;
-			sourceTree = "<group>";
-		};
-		EB6D4EB826BA5A2F00DCF755 /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				EB6D4EB926BA5A2F00DCF755 /* Base */,
+				A69DC74F2B1CF9EF008C0183 /* Base */,
 			);
 			name = Main.storyboard;
 			sourceTree = "<group>";
@@ -316,7 +304,8 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				"INFOPLIST_FILE[sdk=*]" = info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -373,8 +362,10 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				"INFOPLIST_FILE[sdk=*]" = info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
+				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
@@ -388,18 +379,22 @@
 			baseConfigurationReference = 7A862B3053580E92D52AA6E3 /* SampleCode.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				"ASSETCATALOG_COMPILER_APPICON_NAME[sdk=*]" = AppIcon;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				COREML_CODEGEN_LANGUAGE = Swift;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = SGS933XYY9;
 				INFOPLIST_FILE = "$(SRCROOT)/App/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				INFOPLIST_KEY_CFBundleDisplayName = OkraInsight;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.example.apple-samplecode.Vision-Core-ML${SAMPLE_CODE_DISAMBIGUATOR}";
+				PRODUCT_BUNDLE_IDENTIFIER = com.yetanadur.OkraInsight;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "Main View/Vision + CoreML-Bridging-Header.h";
@@ -414,18 +409,21 @@
 			baseConfigurationReference = 7A862B3053580E92D52AA6E3 /* SampleCode.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				COREML_CODEGEN_LANGUAGE = Swift;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = SGS933XYY9;
 				INFOPLIST_FILE = "$(SRCROOT)/App/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				INFOPLIST_KEY_CFBundleDisplayName = OkraInsight;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.example.apple-samplecode.Vision-Core-ML${SAMPLE_CODE_DISAMBIGUATOR}";
+				PRODUCT_BUNDLE_IDENTIFIER = com.yetanadur.OkraInsight;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "Main View/Vision + CoreML-Bridging-Header.h";
@@ -437,23 +435,23 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		11063F591EC0EECC0033EE6D /* Build configuration list for PBXProject "Vision+Core-ML" */ = {
+		11063F591EC0EECC0033EE6D /* Build configuration list for PBXProject "OkraInsight" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				11063F6E1EC0EECC0033EE6D /* Debug */,
 				11063F6F1EC0EECC0033EE6D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
+			defaultConfigurationName = Debug;
 		};
-		11063F701EC0EECC0033EE6D /* Build configuration list for PBXNativeTarget "Vision + CoreML" */ = {
+		11063F701EC0EECC0033EE6D /* Build configuration list for PBXNativeTarget "OkraInsight" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				11063F711EC0EECC0033EE6D /* Debug */,
 				11063F721EC0EECC0033EE6D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
+			defaultConfigurationName = Debug;
 		};
 /* End XCConfigurationList section */
 	};

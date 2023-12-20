@@ -12,7 +12,7 @@ class MainViewController: UIViewController {
     var firstRun = true
     private let imageHelper = UIImageHelper()
     /// A predictor instance that uses Vision and Core ML to generate prediction strings from a photo.
-    let imagePredictor = ImagePredictor()
+    // let imagePredictor = ImagePredictor()
 
     /// The largest number of predictions the main view controller displays the user.
     let predictionsToShow = 2
@@ -133,10 +133,11 @@ extension MainViewController {
         }
 
         let (isTender, odds, conf) = formatPredictions(predictions)
-        showMaskedOkra(predictions, isTender:isTender, image: image)
+
         
         if (conf > 0.9) {
-          let predictionString = "is Okra : (" + String(format: "%.2f", conf * 100) + "% likely) \n" + (isTender ? "Will" : "Will not") + " pass tip-break test : (" + String (format: "%.2f", odds * 100) + "% likely)"
+          showMaskedOkra(predictions, isTender:isTender, image: image)
+          let predictionString = "is Okra : (" + String(format: "%.2f", conf * 100) + "% likely) \n" + (isTender ? "is" : "is not") + " tender : (" + String (format: "%.2f", odds * 100) + "% likely)"
           updatePredictionLabel(predictionString)
         } else {
           let notOkraString = "is not Okra"

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Bucket
+   uuid = "333A5521-7875-46F5-84BA-5B5C82626B87"
+   type = "1"
+   version = "2.0">
+   <Breakpoints>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "E67178A8-8B8C-4166-9FF9-94065BD23E92"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Main View/UIImage+Helper.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "62"
+            endingLineNumber = "62"
+            landmarkName = "regularized()"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "E67178A8-8B8C-4166-9FF9-94065BD23E92 - 349fc8017f15d2dd"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "__C.UIImage.regularized() -&gt; Swift.Optional&lt;Swift.Array&lt;Swift.Float&gt;&gt;"
+                  moduleName = "Vision + CoreML"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/adurbha/Workspace/OkraQualityChecker/Main%20View/UIImage+Helper.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "62"
+                  endingLineNumber = "62"
+                  offsetFromSymbolStart = "144">
+               </Location>
+               <Location
+                  uuid = "E67178A8-8B8C-4166-9FF9-94065BD23E92 - ba7ef411f8caba7"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "__C.UIImage.regularized() -&gt; Swift.Optional&lt;Swift.Array&lt;Swift.Float&gt;&gt;"
+                  moduleName = "OkraInsight"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/adurbha/Workspace/OkraQualityChecker/Main%20View/UIImage+Helper.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "62"
+                  endingLineNumber = "62"
+                  offsetFromSymbolStart = "144">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+   </Breakpoints>
+</Bucket>
